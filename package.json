@@ -9,6 +9,10 @@
     "Node.js",
     "application"
   ],
+  "author": {
+    "name": "Gordon Pimblott",
+    "email": "gordon@pimblott.com"
+  },
   "engines": {
     "node": "6.10.1",
     "npm": "3.10.8"
@@ -23,7 +27,6 @@
     "debug": "~2.2.0",
     "dotenv": "latest",
     "express": "latest",
-    "express-enforces-ssl": "^1.1.0",
     "express-session": "latest",
     "express-handlebars": "latest",
     "helmet": "latest",
@@ -34,9 +37,8 @@
     "serve-favicon": "~2.3.0",
     "handlebars": "latest",
     "handlebars-dateformat": "latest",
-    "basic-auth": "latest",
     "passport": "latest",
-    "passport-local": "latest",
+    "passport-google-oauth2": "^0.1.6",
     "pg": "latest"
   },
   "main": "./server",

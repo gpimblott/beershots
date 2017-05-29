@@ -2,7 +2,10 @@
 
 require('dotenv').config({ path: 'process.env' });
 
-var debug = require('debug')('beershot:server');
+var passport = require('passport');
+require('./config/passport');
+
+var debug = require('debug')('beershots:server');
 var http = require('http');
 
 var express = require('express');
@@ -18,10 +21,9 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
 var session = require('express-session');
-var express_enforces_ssl = require('express-enforces-ssl');
+//var express_enforces_ssl = require('express-enforces-ssl');
 
-const basicAuth = require('./utils/basicAuth.js');
-const routes = require('./routes/index');
+var setupRoutes = require('./routes/setupRoutes');
 
 var helmet = require('helmet');
 
@@ -127,13 +129,9 @@ var BeerShotApp = function () {
         }
 
         self.app.use(session(sess));
+        self.app.use(passport.initialize());
+        self.app.use(passport.session());
 
-        var useAuth = process.env.USE_AUTH || 'false'
-        if (useAuth === 'true') {
-            var username = process.env.USERNAME
-            var password = process.env.PASSWORD
-            self.app.use(basicAuth.basicAuth(username, password))
-        }
 
         // view engine setup
         self.app.set('layoutsDir', path.join(__dirname, 'views/layouts'));
@@ -165,8 +163,9 @@ var BeerShotApp = function () {
             next();
         });
 
-        // Routes go here
-        self.app.use('/', routes);
+
+        // Setup the Server-side events
+        setupRoutes.setup( self );
 
         self.app.use(function (req, res, next) {
             // the status option, or res.statusCode = 404
