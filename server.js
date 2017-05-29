@@ -124,7 +124,6 @@ var BeerShotApp = function () {
         if (self.app.get('env') == 'production') {
             self.app.enable('trust proxy', 1); // trusts first proxy - Heroku load balancer
             debug('In production mode');
-            self.app.use(express_enforces_ssl());
             sess.cookie.secure = true;
         }
 
