@@ -18,7 +18,7 @@ SetupRoutes.setup = function (self) {
         if (req.isAuthenticated()) {
             res.redirect("/");
         } else {
-            res.render("login", { layout: "main-login" });
+            res.render("landing-page", { layout: "landing-page" });
         }
 
     });
@@ -29,6 +29,11 @@ SetupRoutes.setup = function (self) {
             debug("Unauthenticated request caught : %s", req.path);
             if (req.path.startsWith("/api/")) {
                 res.sendStatus(401);
+                return;
+            }
+
+            if (req.path.startsWith("/test")) {
+                next("route");
                 return;
             }
 

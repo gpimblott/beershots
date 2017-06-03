@@ -159,6 +159,10 @@ var BeerShotApp = function () {
 
         // Add stuff to each request here
         self.app.use(function (req, res, next) {
+            if (req.user) {
+                res.locals.profile = req.user;
+            }
+
             next();
         });
 
