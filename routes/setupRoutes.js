@@ -32,10 +32,6 @@ SetupRoutes.setup = function (self) {
                 return;
             }
 
-            if (req.path.startsWith("/test")) {
-                next("route");
-                return;
-            }
 
             req.session.redirect_to = req.url;
             res.redirect("/login");

@@ -1,29 +1,37 @@
-.login-cover {
-    background: url('/images/background.jpg') no-repeat center center fixed;
+.main-cover {
+    background: url('/images/bar_banner.png') no-repeat center center fixed;
     -webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;
     background-size: cover;
+    text-align: center;
+    color: #f8f8f8;
 }
 
-.login-form {
-    background-color: #cdcdcd;
-    border-radius: 10px;
-    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=60)";       /* IE 8 */
-    filter: alpha(opacity=60);  /* IE 5-7 */
-    -moz-opacity: 0.6;          /* Netscape */
-    -khtml-opacity: 0.6;        /* Safari 1.x */
-    opacity: 0.6;               /* Good browsers */
-}
-
-
-.normal-page {
-    padding-top: 70px;
-}
 
 .index-page {
     padding-top: 0px;
 }
+
+#map {
+    height: 100%;
+    width: 100%;
+    min-height: 100%;
+    padding-right: 0;
+    padding-left: 0;
+}
+
+.fill {
+    top: 50px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    position: absolute;
+    width: auto;
+    height: auto;
+}
+
+
 
 
 

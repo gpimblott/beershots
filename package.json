@@ -1,5 +1,5 @@
 {
-  "name": "exampleapp",
+  "name": "beershot",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -39,7 +39,8 @@
     "handlebars-dateformat": "latest",
     "passport": "latest",
     "passport-google-oauth2": "^0.1.6",
-    "pg": "latest"
+    "pg": "latest",
+    "osm-read": "latest"
   },
   "main": "./server",
   "devDependencies": {
