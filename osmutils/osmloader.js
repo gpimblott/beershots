@@ -9,7 +9,7 @@ var client = new pg.Client(process.env.DATABASE_URL);
 client.connect();
 
 var parser = osmread.parse({
-    filePath: './osmdata/plymouth.xml',
+    filePath: './osmdata/bristol.xml',
     endDocument: function () {
         console.log('document end');
     },
@@ -26,7 +26,8 @@ var parser = osmread.parse({
                     + pubName + "',"
                     + node.lat + ","
                     + node.lon + ","
-                    + "'(" + node.lat + "," + node.lon + ")' )";
+                    + "ST_GeographyFromText('SRID=4326;POINT(" + node.lon + " " + node.lat + ")')"
+                    + ")";
                 doQuery(sql, function (result) {
                     console.log("Inserted : " + result);
                 })

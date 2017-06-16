@@ -6,7 +6,7 @@ var AuthRoutes = function () {
 };
 
 /*****************************************************
- * API Interfaces
+ * Authentication Interfaces
  ******************************************************/
 AuthRoutes.setup = function (self) {
 

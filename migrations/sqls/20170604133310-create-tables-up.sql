@@ -10,7 +10,7 @@ CREATE TABLE pubs (
     latitude    REAL NOT null,
     longitude   REAL NOT NULL,
     updated     date,
-    the_geom    point NOT NULL,
+    the_geom    geography(POINT,4326),
     brewery     integer,
     CONSTRAINT uc_pubs UNIQUE (name, latitude, longitude)
 );

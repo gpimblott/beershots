@@ -21,6 +21,17 @@
     padding-left: 0;
 }
 
+#map-id {
+    height: 500px;
+    padding-right: 0;
+    padding-left: 0;
+}
+
+.highlight {
+    background-color: #550055;
+    color:#eeeeee;
+}
+
 .fill {
     top: 50px;
     left: 0;

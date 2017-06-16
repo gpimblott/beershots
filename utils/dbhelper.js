@@ -1,5 +1,7 @@
 'use strict';
 
+var debug = require('debug')('beershots:dbhelper');
+
 /**
  * Helper function to perform base database operations (e.g. query, insert)
  */
@@ -32,21 +34,35 @@ DBHelper.query = function (sql, parameters, done, error) {
             if (client) {
                 client.end();
             }
+            debug("Error : %s", err);
             error(err);
             return;
         }
 
-        var query = client.query(sql, parameters);
+        try {
+            debug("SQL : %s", sql);
+            var query = client.query(sql, parameters);
 
-        query.on('row', function (row) {
-            results.push(row);
-        });
+            query.on('row', function (row) {
+                results.push(row);
+            });
 
-        // After all data is returned, close connection and return results
-        query.on('end', function () {
+            query.on('error', function( err ) {
+               console.log(err);
+                client.end();
+                error(err);
+            });
+
+            // After all data is returned, close connection and return results
+            query.on('end', function () {
+                client.end();
+                done(results);
+            });
+        } catch (err) {
+            debug("Error detected during query");
             client.end();
-            done(results);
-        });
+            error(err);
+        }
 
     });
 }

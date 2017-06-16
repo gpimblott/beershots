@@ -4,6 +4,8 @@ var debug = require("debug")("beershots:routes");
 
 var routes = require("./index");
 var authroutes = require("./authroutes.js");
+var apiroutes = require("./apiroutes.js");
+var pubroutes = require("./pubroutes.js");
 
 var SetupRoutes = function () {
 };
@@ -25,6 +27,8 @@ SetupRoutes.setup = function (self) {
 
     // Everything should be authenticated
     self.app.use(function (req, res, next) {
+
+
         if (req.isUnauthenticated()) {
             debug("Unauthenticated request caught : %s", req.path);
             if (req.path.startsWith("/api/")) {
@@ -43,6 +47,9 @@ SetupRoutes.setup = function (self) {
 
     // All of these routes should be authenticated
     self.app.use("/", routes);
+
+    apiroutes.createRoutes( self );
+    pubroutes.createRoutes( self );
 
 };
 

@@ -110,6 +110,9 @@ var BeerShotApp = function () {
                 res.end();
             });
         }
+        // Setup the Google Analytics ID if defined
+        self.app.locals.locationiq_key = process.env.LOCATIONIQ_KEY || undefined;
+        console.log("LocationIQ Key:" + self.app.locals.locationiq_key);
 
         // Setup the Google Analytics ID if defined
         self.app.locals.google_id = process.env.GOOGLE_ID || undefined;
@@ -127,6 +130,10 @@ var BeerShotApp = function () {
             sess.cookie.secure = true;
         }
 
+        // Deal with static files first
+        self.app.use(express.static(path.join(__dirname, 'public')));
+
+        // Now deal with sessions and passport files
         self.app.use(session(sess));
         self.app.use(passport.initialize());
         self.app.use(passport.session());
@@ -136,7 +143,7 @@ var BeerShotApp = function () {
         self.app.set('layoutsDir', path.join(__dirname, 'views/layouts'));
         self.app.set('partialsDir', path.join(__dirname, 'views/partials'));
         self.app.set('views', path.join(__dirname, 'views'));
-        self.app.use(express.static(path.join(__dirname, 'public')));
+
 
         self.app.use(bodyParser.json());
         self.app.use(bodyParser.urlencoded({

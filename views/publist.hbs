@@ -1,0 +1,107 @@
+
+<div class="jumbotron main-cover" style="margin-top: 10pt">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 col-md-offset-3 text-center">
+                <div>
+                    <h1>BeerShots</h1>
+                    <p>A beer based community</p>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 col-md-offset-3">
+                <form class="" role="search" id="search">
+                    <div id="custom-search-input">
+                        <div class="input-group col-md-12">
+                            <input type="text" class="form-control input-lg" id="q" name="q"
+                                   placeholder="Find a pub by place name or postcode"/>
+                            <span class="input-group-btn">
+                        <button class="btn btn-info btn-lg" type="submit">
+                            <i class="glyphicon glyphicon-search"></i>
+                        </button>
+                    </span>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <!-- Example row of columns -->
+    <div class="row">
+        <div class="col-md-5 col-md-offset-1">
+            <table id="pubTable" class="table display">
+                <thead>
+                <tr>
+                    <th>Name</th>
+                </tr>
+                </thead>
+                <tbody>
+                {{#each pubs}}
+                    <tr id="pub_{{@index}}">
+                        <td><a href="/pub/{{this.id}}">{{this.name}}&nbsp</a></td>
+                        <td><a href="/pub/{{this.id}}">{{this.distance}}&nbsp</a></td>
+                    </tr>
+                {{/each}}
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-5" id="map-id">
+
+        </div>
+    </div>
+</div>
+<hr>
+<script language="JavaScript" src="/js/jspostcode.js"> </script>
+<script language="JavaScript" src="/js/beershots.js"></script>
+
+<script language="JavaScript">
+    /**
+     * Display the map
+     */
+    var map = new L.Map('map-id').setView(new L.LatLng(53, -2.5), 6.5);;
+
+    // create the tile layer with correct attribution
+    var osmUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+    var osmAttrib = 'Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors';
+
+    var osm = new L.TileLayer(osmUrl,
+            { minZoom: 5, maxZoom: 18, attribution: osmAttrib }).addTo(map);
+
+    map.setView({lat:{{latitude}}, lng:{{longitude}} }, 14);
+
+    /**
+     * Put the markers for the pubs on the map
+     */
+    {{#each pubs}}
+    var marker{{@index}} = L.marker([{{latitude}}, {{longitude}}]).addTo(map);
+    marker{{@index}}.bindPopup("<b>{{name}}</b>");
+
+    marker{{@index}}.on('mouseover', function (e) {
+            console.log("{{name}}")
+
+            $('#pubTable').find('*').removeClass('highlight');
+            $("#pubTable #pub_{{@index}}").addClass("highlight");
+        });
+
+
+    {{/each}}
+
+    /**
+     * Setup the search functionality
+     */
+    $(window).ready(function () {
+
+        $("#search").on("submit", function (event) {
+            event.preventDefault();
+            var query = $("#q").val();
+
+            doPubSearch(query, "{{locationiq_key}}");
+        });
+
+
+    });
+</script>

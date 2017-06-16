@@ -10,16 +10,19 @@
         </div>
         <div class="row">
             <div class="col-md-6 col-md-offset-3">
-                <div id="custom-search-input">
-                    <div class="input-group col-md-12">
-                        <input type="text" class="form-control input-lg" placeholder="Find a pub" />
-                        <span class="input-group-btn">
-                        <button class="btn btn-info btn-lg" type="button">
+                <form class="" role="search" id="search">
+                    <div id="custom-search-input">
+                        <div class="input-group col-md-12">
+                            <input type="text" class="form-control input-lg" id="q" name="q"
+                                   placeholder="Find a pub by place name or postcode"/>
+                            <span class="input-group-btn">
+                        <button class="btn btn-info btn-lg" type="submit">
                             <i class="glyphicon glyphicon-search"></i>
                         </button>
                     </span>
+                        </div>
                     </div>
-                </div>
+                </form>
             </div>
         </div>
     </div>
@@ -56,5 +59,20 @@
             </ul>
         </div>
     </div>
+</div>
+<hr>
+<script language="JavaScript" src="/js/jspostcode.js"> </script>
+<script language="JavaScript" src="js/beershots.js"></script>
 
-    <hr>
+<script language="JavaScript">
+    $(window).ready(function () {
+
+        $("#search").on("submit", function (event) {
+            event.preventDefault();
+            var query = $("#q").val();
+
+            doPubSearch(query, "{{locationiq_key}}");
+        });
+
+    });
+</script>
