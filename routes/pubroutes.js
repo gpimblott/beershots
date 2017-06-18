@@ -9,6 +9,18 @@ var PubRoutes = function () {
 
 PubRoutes.createRoutes = function (self) {
 
+    self.app.get('/pub/:pid', function (req, res, next) {
+        var pid = sanitizer(req.params.pid);
+
+        pid = parseFloat(pid);
+
+        pubs.getOne(pid, function (result) {
+            console.log(result);
+            res.render('pub', { layout: 'main-map', pub: result[0] });
+        });
+
+    });
+
     self.app.get('/pubs/:latitude/:longitude', function (req, res, next) {
         var latitude = sanitizer(req.params.latitude);
         var longitude = sanitizer(req.params.longitude);

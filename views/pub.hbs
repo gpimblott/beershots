@@ -33,22 +33,29 @@
     <!-- Example row of columns -->
     <div class="row">
         <div class="col-md-5 col-md-offset-1">
-            <table id="pubTable" class="table display">
-                <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Distance</th>
-                </tr>
-                </thead>
-                <tbody>
-                {{#each pubs}}
-                    <tr id="pub_{{@index}}">
-                        <td><a href="/pub/{{this.pid}}">{{this.name}}&nbsp</a></td>
-                        <td>{{metres2km this.distance}} km&nbsp</td>
-                    </tr>
-                {{/each}}
-                </tbody>
-            </table>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">{{pub.name}}</h3>
+                </div>
+                <div class="panel-body">
+                    <table id="pubTable" class="table display">
+                        <thead>
+                        <tr>
+                            <th>Details</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr><td>Website</td><td>{{pub.url}}</td></tr>
+                        <tr><td>Address</td><td>{{pub.street}}</td></tr>
+                        <tr><td></td><td>{{pub.town}}</td></tr>
+                        <tr><td></td><td>{{pub.postcode}}</td></tr>
+                        <tr><td>About</td><td>{{pub.about}}</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
         </div>
         <div class="col-md-5" id="map-id">
 
@@ -63,7 +70,7 @@
     /**
      * Display the map
      */
-    var map = new L.Map('map-id').setView(new L.LatLng(53, -2.5), 6.5);;
+    var map = new L.Map('map-id');
 
     // create the tile layer with correct attribution
     var osmUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
@@ -72,24 +79,10 @@
     var osm = new L.TileLayer(osmUrl,
             { minZoom: 5, maxZoom: 18, attribution: osmAttrib }).addTo(map);
 
-    map.setView({lat:{{latitude}}, lng:{{longitude}} }, 14);
+    map.setView( { lat:{{pub.latitude}}, lng:{{pub.longitude}} }, 18);
 
-    /**
-     * Put the markers for the pubs on the map
-     */
-    {{#each pubs}}
-    var marker{{@index}} = L.marker([{{latitude}}, {{longitude}}]).addTo(map);
-    marker{{@index}}.bindPopup("<b>{{name}}</b>");
-
-    marker{{@index}}.on('mouseover', function (e) {
-            console.log("{{name}}")
-
-            $('#pubTable').find('*').removeClass('highlight');
-            $("#pubTable #pub_{{@index}}").addClass("highlight");
-        });
-
-
-    {{/each}}
+    var marker = L.marker([{{pub.latitude}}, {{pub.longitude}}]).addTo(map);
+    marker.bindPopup("<b>{{pub.name}}</b>");
 
     /**
      * Setup the search functionality

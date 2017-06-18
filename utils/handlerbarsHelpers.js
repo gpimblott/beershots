@@ -34,6 +34,10 @@ Handlebars.registerHelper("ifCond", function (v1, operator, v2, options) {
     }
 });
 
+Handlebars.registerHelper("metres2km" , function ( value ) {
+    value = value/1000;
+    return +( Math.round(Number(value + "e+2") )  + "e-2");
+})
 
 Handlebars.registerHelper("nl2br" , function (text, isXhtml) {
     var breakTag = (isXhtml || typeof isXhtml === 'undefined') ? '<br />' : '<br>';

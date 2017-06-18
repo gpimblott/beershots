@@ -9,19 +9,12 @@ var GoogleStrategy = require('passport-google-oauth2').Strategy;
 var User = require('../models/user');
 
 passport.serializeUser(function (user, done) {
-    done(null, user.id);
+    done(null,  user);
 });
 
 passport.deserializeUser(function (user, done) {
 
-    debug('deserializeUser');
-    User.findById(user, function (err, user) {
-        if (err) {
-            done(err);
-        }
-
-        done(err, user);
-    });
+    done( null , user);
 });
 
 var callback;

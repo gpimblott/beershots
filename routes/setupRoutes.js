@@ -28,6 +28,7 @@ SetupRoutes.setup = function (self) {
     // Everything should be authenticated
     self.app.use(function (req, res, next) {
 
+        debug("default security route");
 
         if (req.isUnauthenticated()) {
             debug("Unauthenticated request caught : %s", req.path);

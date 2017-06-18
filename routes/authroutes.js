@@ -22,6 +22,7 @@ AuthRoutes.setup = function (self) {
   self.app.get('/auth/google/callback',
     passport.authenticate('google', { failureRedirect: '/pages/index' }),
     function (req, res) {
+      console.log(res.user);
       res.redirect('/');
     });
 

@@ -16,11 +16,33 @@ Pubs.getAll = function( done ) {
 
 Pubs.getNear = function( latitude , longitude , done) {
     debug('getting pubs near : ' + latitude + " : " + longitude );
-    var sql = "SELECT name , latitude , longitude, ST_Distance(the_geom, ST_MakePoint( $1, $2 ) ) as distance" +
+    var sql = "SELECT pid , name , latitude , longitude," +
+                " ST_Distance(the_geom, ST_MakePoint( $1, $2 ) ) as distance" +
                 " FROM pubs" +
                 " ORDER BY the_geom <->  ST_MakePoint( $1, $2 ) " +
-                " LIMIT 10;";
+                " LIMIT 15;";
     var params = [ longitude, latitude ];
+
+    dbhelper.query( sql , params ,
+        function( result ) {
+            done( result );
+        },
+        function(error) {
+            done(null , error );
+        });
+};
+
+/**
+ * Get one pub
+ * @param pid
+ * @param done
+ */
+Pubs.getOne = function( pid , done) {
+    debug('getting pub : ' + pid);
+    var sql = "SELECT *" +
+        " FROM pubs" +
+        " where pid=$1";
+    var params = [ pid ];
 
     dbhelper.query( sql , params ,
         function( result ) {
