@@ -56,13 +56,17 @@ tbody tr {
      background-color: white;
  }
 
-tbody tr a {
-    color: black;
-}
+/*tbody tr a {*/
+    /*color: black;*/
+/*}*/
 
 .highlight {
     background-color: lightslategray;
     color:black;
+}
+
+.highlight a {
+    color: white;
 }
 
 
