@@ -12,7 +12,14 @@ CREATE TABLE pubs (
     updated     date,
     the_geom    geography(POINT,4326),
     brewery     integer,
+    rating      integer DEFAULT 0,
     CONSTRAINT uc_pubs UNIQUE (name, latitude, longitude)
+);
+
+CREATE TABLE pub_ratings (
+    uid integer references users(id),
+    pid integer references pubs(pid),
+    CONSTRAINT uc_user_rating UNIQUE ( uid, pid )
 );
 
 CREATE SEQUENCE brewery_serial START 1;

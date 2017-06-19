@@ -1,3 +1,4 @@
+<link rel="stylesheet" href="/css/starr.css" crossorigin="anonymous">
 
 <div class="jumbotron main-cover" style="margin-top: 10pt">
     <div class="container">
@@ -32,12 +33,13 @@
 <div class="container">
     <!-- Example row of columns -->
     <div class="row">
-        <div class="col-md-5 col-md-offset-1">
+        <div class="col-md-6">
             <table id="pubTable" class="table display">
                 <thead>
                 <tr>
                     <th>Name</th>
                     <th>Distance</th>
+                    <th>Rating</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -45,17 +47,22 @@
                     <tr id="pub_{{@index}}">
                         <td><a href="/pub/{{this.pid}}">{{this.name}}&nbsp</a></td>
                         <td>{{metres2km this.distance}} km&nbsp</td>
+                        <td> <div id="stars_{{@index}}" class="starrr"></div></td>
                     </tr>
                 {{/each}}
                 </tbody>
             </table>
+
         </div>
-        <div class="col-md-5" id="map-id">
+        <div class="col-md-6" id="map-id">
 
         </div>
     </div>
 </div>
 <hr>
+
+
+<script language="JavaScript" src="/js/starr.js"></script>
 <script language="JavaScript" src="/js/jspostcode.js"> </script>
 <script language="JavaScript" src="/js/beershots.js"></script>
 
@@ -104,5 +111,16 @@
         });
 
 
+
     });
+
+
+    {{#each pubs}}
+        $("#stars_{{@index}}").starrr({
+            rating: {{rating}},
+            readOnly: true
+
+        });
+    {{/each}}
+
 </script>

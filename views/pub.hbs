@@ -46,7 +46,15 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr><td>Website</td><td>{{pub.url}}</td></tr>
+                        <tr><td>Your rating</td><td><div id="stars-existing" class="starrr" data-rating='4'></div></td></tr>
+                        <tr><td>Community rating</td><td><div id="stars" class="starrr"></div></td></tr>
+                        <tr><td>Website</td>
+                            <td>
+                                {{#if pub.url}}
+                                <a href="{{pub.url}}" target="_blank">{{pub.url}}</a>
+                                {{/if}}
+                            </td>
+                        </tr>
                         <tr><td>Address</td><td>{{pub.street}}</td></tr>
                         <tr><td></td><td>{{pub.town}}</td></tr>
                         <tr><td></td><td>{{pub.postcode}}</td></tr>
@@ -63,6 +71,7 @@
     </div>
 </div>
 <hr>
+<script language="JavaScript" src="/js/starrating.js"></script>
 <script language="JavaScript" src="/js/jspostcode.js"> </script>
 <script language="JavaScript" src="/js/beershots.js"></script>
 
@@ -96,6 +105,17 @@
             doPubSearch(query, "{{locationiq_key}}");
         });
 
+        $('#stars').on('starrr:change', function(e, value){
+
+//            $('#count').html(value);
+        });
 
     });
+
+
+    $(function() {
+        return $(".starrr").starrr();
+    });
+
+
 </script>

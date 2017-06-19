@@ -16,11 +16,11 @@ Pubs.getAll = function( done ) {
 
 Pubs.getNear = function( latitude , longitude , done) {
     debug('getting pubs near : ' + latitude + " : " + longitude );
-    var sql = "SELECT pid , name , latitude , longitude," +
+    var sql = "SELECT pid ,name ,rating ,latitude , longitude," +
                 " ST_Distance(the_geom, ST_MakePoint( $1, $2 ) ) as distance" +
                 " FROM pubs" +
-                " ORDER BY the_geom <->  ST_MakePoint( $1, $2 ) " +
-                " LIMIT 15;";
+                " WHERE ST_Distance(the_geom, ST_MakePoint( $1, $2 ) ) < 2000" +
+                " ORDER BY the_geom <->  ST_MakePoint( $1, $2 ) ";
     var params = [ longitude, latitude ];
 
     dbhelper.query( sql , params ,
