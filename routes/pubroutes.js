@@ -16,7 +16,7 @@ PubRoutes.createRoutes = function (self) {
 
         pubs.getOne(pid, function (result) {
             console.log(result);
-            res.render('pub', { layout: 'main-map', pub: result[0] });
+            res.render('pub', { layout: 'min-map', pub: result[0] });
         });
 
     });
@@ -29,7 +29,7 @@ PubRoutes.createRoutes = function (self) {
         longitude = parseFloat(longitude);
 
         pubs.getNear(latitude, longitude, function (result) {
-            res.render('publist', { layout: 'main-map', pubs: result, latitude: latitude , longitude: longitude });
+            res.render('publist', { layout: 'min-map', pubs: result, latitude: latitude , longitude: longitude });
         });
 
     });

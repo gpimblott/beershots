@@ -1,79 +1,73 @@
-
-<div class="jumbotron main-cover" style="margin-top: 10pt">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-6 col-md-offset-3 text-center">
-                <div>
-                    <h1>BeerShots</h1>
-                    <p>A beer based community</p>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6 col-md-offset-3">
-                <form class="" role="search" id="search">
-                    <div id="custom-search-input">
-                        <div class="input-group col-md-12">
-                            <input type="text" class="form-control input-lg" id="q" name="q"
-                                   placeholder="Find a pub by place name or postcode"/>
-                            <span class="input-group-btn">
-                        <button class="btn btn-info btn-lg" type="submit">
-                            <i class="glyphicon glyphicon-search"></i>
-                        </button>
-                    </span>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
 <div class="container">
     <!-- Example row of columns -->
     <div class="row">
-        <div class="col-md-5 col-md-offset-1">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">{{pub.name}}</h3>
+        <div class="col-md-7">
+
+            <div class="row">
+                <div class="col-md-12">
+                    <h2>{{pub.name}}</h2>
                 </div>
-                <div class="panel-body">
-                    <table id="pubTable" class="table display">
-                        <thead>
-                        <tr>
-                            <th>Details</th>
-                            <th></th>
-                        </tr>
-                        </thead>
+            </div>
+
+            <div class="row">
+                <div class="col-md-10 col-md-offset-1">
+                    {{>ratingcard}}</div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-10 col-md-offset-1">
+                    <table id="pubTable" class="table">
+
                         <tbody>
-                        <tr><td>Your rating</td><td><div id="stars-existing" class="starrr" data-rating='4'></div></td></tr>
-                        <tr><td>Community rating</td><td><div id="stars" class="starrr"></div></td></tr>
-                        <tr><td>Website</td>
+                        <tr>
+                            <td>Your rating</td>
+                            <td>
+                                <div id="stars-existing" class="starrr" data-rating='4'></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Community rating</td>
+                            <td>
+                                <div id="stars" class="starrr"></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Website</td>
                             <td>
                                 {{#if pub.url}}
-                                <a href="{{pub.url}}" target="_blank">{{pub.url}}</a>
+                                    <a href="{{pub.url}}" target="_blank">{{pub.url}}</a>
                                 {{/if}}
                             </td>
                         </tr>
-                        <tr><td>Address</td><td>{{pub.street}}</td></tr>
-                        <tr><td></td><td>{{pub.town}}</td></tr>
-                        <tr><td></td><td>{{pub.postcode}}</td></tr>
-                        <tr><td>About</td><td>{{pub.about}}</td></tr>
+                        <tr>
+                            <td>Address</td>
+                            <td>{{pub.street}}</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>{{pub.town}}</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>{{pub.postcode}}</td>
+                        </tr>
+                        <tr>
+                            <td>About</td>
+                            <td>{{pub.about}}</td>
+                        </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
-
         </div>
         <div class="col-md-5" id="map-id">
-
         </div>
     </div>
+
+
 </div>
 <hr>
-<script language="JavaScript" src="/js/starrating.js"></script>
-<script language="JavaScript" src="/js/jspostcode.js"> </script>
-<script language="JavaScript" src="/js/beershots.js"></script>
+
 
 <script language="JavaScript">
     /**
@@ -88,7 +82,7 @@
     var osm = new L.TileLayer(osmUrl,
             { minZoom: 5, maxZoom: 18, attribution: osmAttrib }).addTo(map);
 
-    map.setView( { lat:{{pub.latitude}}, lng:{{pub.longitude}} }, 18);
+    map.setView({ lat:{{pub.latitude}}, lng:{{pub.longitude}} }, 18);
 
     var marker = L.marker([{{pub.latitude}}, {{pub.longitude}}]).addTo(map);
     marker.bindPopup("<b>{{pub.name}}</b>");
@@ -105,15 +99,13 @@
             doPubSearch(query, "{{locationiq_key}}");
         });
 
-        $('#stars').on('starrr:change', function(e, value){
+        $('#stars').on('starrr:change', function (e, value) {
 
-//            $('#count').html(value);
         });
 
     });
 
-
-    $(function() {
+    $(function () {
         return $(".starrr").starrr();
     });
 

@@ -1,35 +1,3 @@
-<link rel="stylesheet" href="/css/starr.css" crossorigin="anonymous">
-
-<div class="jumbotron main-cover" style="margin-top: 10pt">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-6 col-md-offset-3 text-center">
-                <div>
-                    <h1>BeerShots</h1>
-                    <p>A beer based community</p>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6 col-md-offset-3">
-                <form class="" role="search" id="search">
-                    <div id="custom-search-input">
-                        <div class="input-group col-md-12">
-                            <input type="text" class="form-control input-lg" id="q" name="q"
-                                   placeholder="Find a pub by place name or postcode"/>
-                            <span class="input-group-btn">
-                        <button class="btn btn-info btn-lg" type="submit">
-                            <i class="glyphicon glyphicon-search"></i>
-                        </button>
-                    </span>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
 <div class="container">
     <!-- Example row of columns -->
     <div class="row">
@@ -47,7 +15,9 @@
                     <tr id="pub_{{@index}}">
                         <td><a href="/pub/{{this.pid}}">{{this.name}}&nbsp</a></td>
                         <td>{{metres2km this.distance}} km&nbsp</td>
-                        <td> <div id="stars_{{@index}}" class="starrr"></div></td>
+                        <td>
+                            <div id="stars_{{@index}}" class="starrr"></div>
+                        </td>
                     </tr>
                 {{/each}}
                 </tbody>
@@ -62,15 +32,25 @@
 <hr>
 
 
-<script language="JavaScript" src="/js/starr.js"></script>
-<script language="JavaScript" src="/js/jspostcode.js"> </script>
-<script language="JavaScript" src="/js/beershots.js"></script>
-
 <script language="JavaScript">
+    var table = null;
+
+    $(document).ready(function () {
+        table = $('#pubTable').DataTable({
+            scrollY: 400,
+            deferRender: true,
+            scroller: true,
+            paging: true,
+            searching: false,
+            order: [ [ 1, "asc" ] ]
+        });
+    });
+
     /**
      * Display the map
      */
-    var map = new L.Map('map-id').setView(new L.LatLng(53, -2.5), 6.5);;
+    var map = new L.Map('map-id').setView(new L.LatLng(53, -2.5), 6.5);
+    ;
 
     // create the tile layer with correct attribution
     var osmUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
@@ -79,24 +59,27 @@
     var osm = new L.TileLayer(osmUrl,
             { minZoom: 5, maxZoom: 18, attribution: osmAttrib }).addTo(map);
 
-    map.setView({lat:{{latitude}}, lng:{{longitude}} }, 14);
+    map.setView({ lat:{{latitude}}, lng:{{longitude}} }, 14);
 
     /**
      * Put the markers for the pubs on the map
      */
-    {{#each pubs}}
-    var marker{{@index}} = L.marker([{{latitude}}, {{longitude}}]).addTo(map);
-    marker{{@index}}.bindPopup("<b>{{name}}</b>");
+        {{#each pubs}}
+        var marker{{@index}} = L.marker([{{latitude}}, {{longitude}}]).addTo(map);
+        marker{{@index}}.bindPopup("<b>{{name}}</b>");
 
-    marker{{@index}}.on('mouseover', function (e) {
-            console.log("{{name}}")
+        marker{{@index}}.on('click', function (e) {
 
             $('#pubTable').find('*').removeClass('highlight');
             $("#pubTable #pub_{{@index}}").addClass("highlight");
+
+            var selection = $("#pubTable #pub_{{@index}}");
+            var index = table.row(selection).index();
+            table.row(index).scrollTo();
         });
 
 
-    {{/each}}
+        {{/each}}
 
     /**
      * Setup the search functionality
@@ -110,17 +93,15 @@
             doPubSearch(query, "{{locationiq_key}}");
         });
 
-
-
     });
 
 
-    {{#each pubs}}
+        {{#each pubs}}
         $("#stars_{{@index}}").starrr({
             rating: {{rating}},
             readOnly: true
 
         });
-    {{/each}}
+        {{/each}}
 
 </script>
