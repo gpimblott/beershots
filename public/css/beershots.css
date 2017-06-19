@@ -52,12 +52,16 @@
 .rating-desc .col-md-3 {padding-right: 0px;}
 .sr-only { margin-left: 5px;overflow: visible;clip: auto; }
 
-tbody tr{
-    background-color: white;
+tbody tr {
+     background-color: white;
+ }
+
+tbody tr a {
+    color: black;
 }
 
 .highlight {
-    background-color: pink;
+    background-color: lightslategray;
     color:black;
 }
 
