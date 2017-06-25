@@ -11,7 +11,7 @@
 
             <div class="row">
                 <div class="col-md-10 col-md-offset-1">
-                    {{>ratingcard}}</div>
+                    {{>ratingcard this}}</div>
             </div>
 
             <div class="row">
@@ -22,13 +22,7 @@
                         <tr>
                             <td>Your rating</td>
                             <td>
-                                <div id="stars-existing" class="starrr" data-rating='4'></div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Community rating</td>
-                            <td>
-                                <div id="stars" class="starrr"></div>
+                                <div id="my-rating" class="starrr" data-rating='4'></div>
                             </td>
                         </tr>
                         <tr>
@@ -99,14 +93,39 @@
             doPubSearch(query, "{{locationiq_key}}");
         });
 
-        $('#stars').on('starrr:change', function (e, value) {
+        $('#my-rating').on('starrr:change', function (e, value) {
+            console.log("Changed my rating : " + value);
+
+            var data = {};
+            data.rating =  value;
+            data.pid = {{pub.pid}};
+
+            console.log(JSON.stringify( data ));
+
+            $.ajax({
+                type: "PUT",
+                url: '/api/rating',
+                contentType: "application/json",
+                processData: false,
+                data: JSON.stringify( data ),
+                success: function (result) {
+                    if (result.success) {
+                       // alert("Update successful");
+                    } else {
+                        alert("There was an error while updating your rating - " + result.error);
+                    }
+                }
+            });
+
 
         });
 
     });
 
     $(function () {
-        return $(".starrr").starrr();
+        $("#my-rating").starrr();
+
+        return;
     });
 
 

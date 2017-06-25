@@ -1,3 +1,4 @@
+DROP TABLE pub_ratings;
 DROP TABLE beers;
 DROP TABLE pubs;
 DROP TABLE breweries;

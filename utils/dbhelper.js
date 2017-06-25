@@ -1,13 +1,13 @@
 'use strict';
 
-var debug = require('debug')('beershots:dbhelper');
+const debug = require('debug')('beershots:dbhelper');
 
 /**
  * Helper function to perform base database operations (e.g. query, insert)
  */
-var pg = require('pg');
+const pg = require('pg');
 
-var DBHelper = function () {
+const DBHelper = function () {
 };
 
 /**
@@ -19,15 +19,15 @@ var DBHelper = function () {
  */
 DBHelper.query = function (sql, parameters, done, error) {
     if (process.env.USE_SSL && process.env.USE_SSL.toLowerCase() !== 'false') {
-        console.log('Using SSL');
+        debug('Using SSL');
         pg.defaults.ssl = true;
     }
 
     pg.defaults.poolSize = 50;
 
-    console.log(process.env.DATABASE_URL);
-    pg.connect(process.env.DATABASE_URL, function (err, client) {
-        var results = [];
+    debug("Connecting to %s" , process.env.DATABASE_URL);
+    pg.connect(process.env.DATABASE_URL, (err, client) => {
+        const results = [];
 
         // Handle connection errors
         if (err) {
@@ -41,20 +41,20 @@ DBHelper.query = function (sql, parameters, done, error) {
 
         try {
             debug("SQL : %s", sql);
-            var query = client.query(sql, parameters);
+            const query = client.query(sql, parameters);
 
-            query.on('row', function (row) {
+            query.on('row', (row) => {
                 results.push(row);
             });
 
-            query.on('error', function( err ) {
-               console.log(err);
+            query.on('error', ( err ) => {
+                debug(err);
                 client.end();
                 error(err);
             });
 
             // After all data is returned, close connection and return results
-            query.on('end', function () {
+            query.on('end', () => {
                 client.end();
                 done(results);
             });
@@ -79,7 +79,7 @@ DBHelper.insert = function (sql, parameters, done, error) {
         pg.defaults.ssl = true;
     }
 
-    pg.connect(process.env.DATABASE_URL, function (err, client) {
+    pg.connect(process.env.DATABASE_URL, (err, client) => {
         // Handle connection errors
         if (err) {
             if (client) {
@@ -90,7 +90,7 @@ DBHelper.insert = function (sql, parameters, done, error) {
         }
 
         client.query(sql, parameters,
-            function (err, result) {
+            (err, result) => {
                 if (err) {
                     error(err)
                 } else {
@@ -109,39 +109,45 @@ DBHelper.insert = function (sql, parameters, done, error) {
  */
 DBHelper.deleteByIds = function (tableName, ids, done) {
 
-    var params = [];
-    for (var i = 1; i <= ids.length; i++) {
+    const params = [];
+    for (let i = 1; i <= ids.length; i++) {
         params.push('$' + i);
     }
 
-    var sql = "DELETE FROM " + tableName + " WHERE id IN (" + params.join(',') + "  )";
+    const sql = "DELETE FROM " + tableName + " WHERE id IN (" + params.join(',') + "  )";
 
     DBHelper.query(sql, ids,
-        function (result) {
+        (result) => {
             done(true);
         },
-        function (error) {
-            console.log(error);
+        (error) => {
+            debug(error);
             done(false, error);
         });
 
 }
 
+/**
+ * get all of the rows and columns from the specified table
+ * @param tableName
+ * @param done
+ * @param order
+ */
 DBHelper.getAllFromTable = function (tableName, done, order) {
-    var sql = "SELECT * FROM " + tableName;
-    var params = [];
+    let sql = "SELECT * FROM " + tableName;
+    const params = [];
 
-    if (order != null) {
-        sql = sql + " ORDER BY $1";
+    if (order !== null) {
+        sql += " ORDER BY $1";
         params.push(order);
     }
 
     DBHelper.query(sql, params,
-        function (results) {
+        (results) => {
             done(results);
         },
-        function (error) {
-            console.log(error);
+        (error) => {
+            debug(error);
             done(null);
         });
 }

@@ -1,35 +1,37 @@
 'use strict';
 
-var debug = require('debug')('beershots:pub-routes');
-var pubs = require('../dao/pubs.js');
-var sanitizer = require('sanitize-html');
+const debug = require('debug')('beershots:pub-routes');
+const pubs = require('../dao/pubs.js');
+const sanitizer = require('sanitize-html');
 
-var PubRoutes = function () {
+const PubRoutes = function () {
 };
 
 PubRoutes.createRoutes = function (self) {
 
-    self.app.get('/pub/:pid', function (req, res, next) {
-        var pid = sanitizer(req.params.pid);
+    self.app.get('/pub/:pid', (req, res, next) => {
 
+        let pid = sanitizer(req.params.pid);
         pid = parseFloat(pid);
 
-        pubs.getOne(pid, function (result) {
-            console.log(result);
+        debug( "Getting pub %d" , pid );
+        pubs.getOne(pid, (result) => {
             res.render('pub', { layout: 'min-map', pub: result[0] });
         });
 
     });
 
-    self.app.get('/pubs/:latitude/:longitude', function (req, res, next) {
-        var latitude = sanitizer(req.params.latitude);
-        var longitude = sanitizer(req.params.longitude);
+    self.app.get('/pubs/:latitude/:longitude', (req, res, next) => {
+        let latitude = sanitizer(req.params.latitude);
+        let longitude = sanitizer(req.params.longitude);
+
 
         latitude = parseFloat(latitude);
         longitude = parseFloat(longitude);
 
-        pubs.getNear(latitude, longitude, function (result) {
-            res.render('publist', { layout: 'min-map', pubs: result, latitude: latitude , longitude: longitude });
+        debug("Getting pubs in %d,%d" , latitude , longitude );
+        pubs.getNear(latitude, longitude, (result) => {
+            res.render('publist', { layout: 'min-map', pubs: result, latitude , longitude });
         });
 
     });

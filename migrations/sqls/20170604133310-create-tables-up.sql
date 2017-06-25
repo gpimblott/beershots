@@ -19,6 +19,7 @@ CREATE TABLE pubs (
 CREATE TABLE pub_ratings (
     uid integer references users(id),
     pid integer references pubs(pid),
+    rating integer,
     CONSTRAINT uc_user_rating UNIQUE ( uid, pid )
 );
 

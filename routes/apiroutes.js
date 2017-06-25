@@ -1,9 +1,11 @@
 'use strict';
 
-var debug = require('debug')('beershots:api-routes');
-var pubs = require('../dao/pubs.js');
+const debug = require('debug')('beershots:api-routes');
+const pubs = require('../dao/pubs.js');
+const pubRatings = require('../dao/pubRatings.js');
+const sanitizer = require('sanitize-html');
 
-var ApiRoutes = function () {
+const ApiRoutes = function () {
 };
 
 ApiRoutes.createRoutes = function (self) {
@@ -11,12 +13,31 @@ ApiRoutes.createRoutes = function (self) {
     self.app.get('/api/searchbylocation', function (req, res, next) {
 
         pubs.getAll(function (result) {
-            res.writeHead(200, { "Content-Type": "application/json" });
+            res.writeHead(200, {"Content-Type": "application/json"});
             res.end(JSON.stringify(result));
         });
     });
-}
 
+    self.app.put('/api/rating', function (req, res, next) {
+        debug(req.body);
+
+        const rating = sanitizer(req.body.rating);
+        const pid = sanitizer(req.body.pid);
+
+        debug(req.user.id + " : " + rating + " : " + pid);
+
+        pubRatings.add(req.user.id, pid, rating, function (result) {
+            const payload = {};
+            payload.success = true;
+
+            res.writeHead(200, {"Content-Type": "application/json"});
+            res.end(JSON.stringify(payload));
+            return;
+        });
+
+
+    });
+}
 
 
 module.exports = ApiRoutes;

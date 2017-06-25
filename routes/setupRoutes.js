@@ -1,13 +1,13 @@
 "use strict";
 
-var debug = require("debug")("beershots:routes");
+const debug = require("debug")("beershots:routes");
 
-var routes = require("./index");
-var authroutes = require("./authroutes.js");
-var apiroutes = require("./apiroutes.js");
-var pubroutes = require("./pubroutes.js");
+const routes = require("./index");
+const authroutes = require("./authroutes.js");
+const apiroutes = require("./apiroutes.js");
+const pubroutes = require("./pubroutes.js");
 
-var SetupRoutes = function () {
+const SetupRoutes = function () {
 };
 
 SetupRoutes.setup = function (self) {
@@ -16,7 +16,7 @@ SetupRoutes.setup = function (self) {
     authroutes.setup(self);
 
     // Check for the login route first - this can be accessed unauthenticated
-    self.app.get("/login", function (req, res, next) {
+    self.app.get("/login", (req, res, next) => {
         if (req.isAuthenticated()) {
             res.redirect("/");
         } else {
@@ -26,7 +26,7 @@ SetupRoutes.setup = function (self) {
     });
 
     // Everything should be authenticated
-    self.app.use(function (req, res, next) {
+    self.app.use((req, res, next) => {
 
         debug("default security route");
 
