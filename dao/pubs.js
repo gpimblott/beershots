@@ -19,17 +19,17 @@ Pubs.getAll = function (done) {
 Pubs.getNear = function (latitude, longitude, done) {
     debug("getting pubs near : " + latitude + " : " + longitude);
     const sql = "SELECT pid ,name ,rating ,latitude , longitude," +
-            " ST_Distance(the_geom, ST_MakePoint( $1, $2 ) ) as distance" +
-            " FROM pubs" +
-            " WHERE ST_Distance(the_geom, ST_MakePoint( $1, $2 ) ) < 2000" +
-            " ORDER BY the_geom <->  ST_MakePoint( $1, $2 ) ";
+        " ST_Distance(the_geom, ST_MakePoint( $1, $2 ) ) as distance" +
+        " FROM pubs" +
+        " WHERE ST_Distance(the_geom, ST_MakePoint( $1, $2 ) ) < 2000" +
+        " ORDER BY the_geom <->  ST_MakePoint( $1, $2 ) ";
     const params = [longitude, latitude];
 
     dbhelper.query(sql, params,
-        function (result) {
+        (result) => {
             done(result);
         },
-        function (error) {
+        (error) => {
             done(null, error);
         });
 };
@@ -42,17 +42,17 @@ Pubs.getNear = function (latitude, longitude, done) {
 Pubs.getOne = function (pid, done) {
     debug("getting one pub : " + pid);
     const sql = "SELECT pubs.*, " +
-            "(select avg(rating) from pub_ratings where pid=$1 group by pid ) as average_rating," +
-            "(select count(rating) from pub_ratings where pid=$1) as total_reviews" +
-            " FROM pubs" +
-            " where pid=$1";
+        "(select avg(rating) from pub_ratings where pid=$1 group by pid ) as average_rating," +
+        "(select count(rating) from pub_ratings where pid=$1) as total_reviews" +
+        " FROM pubs" +
+        " where pid=$1";
     const params = [pid];
 
     dbhelper.query(sql, params,
-        function (result) {
+        (result) => {
             done(result);
         },
-        function (error) {
+        (error) => {
             done(null, error);
         });
 };
@@ -67,10 +67,10 @@ Pubs.add = function (name, description, done) {
     const params = [name, description];
 
     dbhelper.insert(sql, params,
-        function (result) {
+        (result) => {
             done(result.rows[0].id);
         },
-        function (error) {
+        (error) => {
             console.log(error);
             done(null, error);
         });

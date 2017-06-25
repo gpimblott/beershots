@@ -1,7 +1,7 @@
-var dbhelper = require('../utils/dbhelper.js');
-var debug = require('debug')('beershots:user');
+const dbhelper = require('../utils/dbhelper.js');
+const debug = require('debug')('beershots:user');
 
-var User = function () {
+const User = function () {
     this.id = 0;
     this.firstname = '';
     this.surname = '';
@@ -16,20 +16,20 @@ var User = function () {
 User.findOne = function (profile, done) {
 
     debug("findOne : %s", profile.id);
-    var sql = "SELECT *  FROM users where googleid=$1 ";
+    const sql = "SELECT *  FROM users where googleid=$1 ";
 
     dbhelper.query(sql, [ profile.id ],
-        function (results) {
+        (results) => {
 
-            if (results == null || results.length == 0) {
+            if (results === null || results.length === 0) {
                 return done(null, null);
             }
 
-            var user = User.recordToUser(results[ 0 ]);
+            const user = User.recordToUser(results[ 0 ]);
             return done(null, user);
         },
-        function (error) {
-            console.error(error);
+        (error) => {
+            debug(error);
             return done(null, null);
         });
 };
@@ -37,10 +37,10 @@ User.findOne = function (profile, done) {
 User.findById = function (id, done) {
     debug("findById : %s", id);
 
-    var sql = "SELECT * FROM users where id=$1 ";
+    const sql = "SELECT * FROM users where id=$1 ";
 
     dbhelper.query(sql, [ id ],
-        function (results) {
+        (results) => {
 
             if (results === null) {
                 return done(null, null);
@@ -49,51 +49,48 @@ User.findById = function (id, done) {
             if (results.length === 0) {
                 debug("User %s NOT found", id);
                 return done(null, null);
-            } else {
+            } 
                 debug("User %s found", id);
-                var user = User.recordToUser(results[ 0 ]);
+                const user = User.recordToUser(results[ 0 ]);
                 return done(null, user);
-            }
+            
         },
-        function (error) {
+        (error) => {
             debug("Error finding user %s : %s", id, error);
-            console.error(error);
             return done(null, null);
         });
 };
 
 User.prototype.save = function (done) {
 
-    var sql = "INSERT INTO users ( firstname, surname, googleid, fullname, email,picture,gender,googletoken) " +
+    const sql = "INSERT INTO users ( firstname, surname, googleid, fullname, email,picture,gender,googletoken) " +
         "values ( $1 , $2 , $3 , $4 , $5 , $6 , $7 , $8 ) returning id";
-    var params = [ this.firstname, this.surname, this.googleid, this.fullname, this.email, this.picture, this.gender, this.googletoken ];
+    const params = [ this.firstname, this.surname, this.googleid, this.fullname, this.email, this.picture, this.gender, this.googletoken ];
 
     dbhelper.insert(sql, params,
-        function (result) {
-            return done(result.rows[ 0 ].id);
-        },
-        function (error) {
-            console.error(error);
+        (result) => done(result.rows[ 0 ].id),
+        (error) => {
+            debug(error);
             return done(null);
         });
 }
 
 User.updateAccessToken = function (userid, token, done) {
-    var sql = "UPDATE users set googletoken = $2 WHERE id=$1";
-    var params = [ userid, token ];
+    const sql = "UPDATE users set googletoken = $2 WHERE id=$1";
+    const params = [ userid, token ];
 
     dbhelper.query(sql, params,
-        function (results) {
+        (results) => {
             done(results);
         },
-        function (error) {
-            console.error(error);
+        (error) => {
+            debug(error);
             return done(null);
         });
 }
 
 User.recordToUser = function (record) {
-    var user = new User();
+    const user = new User();
     user.id = record.id;
     user.firstname = record.firstname;
     user.surname = record.surname;

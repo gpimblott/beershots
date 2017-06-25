@@ -1,8 +1,8 @@
 'use strict';
 
-var passport = require('passport');
+const passport = require('passport');
 
-var AuthRoutes = function () {
+const AuthRoutes = function () {
 };
 
 /*****************************************************
@@ -10,26 +10,24 @@ var AuthRoutes = function () {
  ******************************************************/
 AuthRoutes.setup = function (self) {
 
-  self.app.get('/auth/google', passport.authenticate('google',
-    {
-      scope: [ 'https://www.googleapis.com/auth/userinfo.profile',
-      'https://www.googleapis.com/auth/userinfo.email'],
-      // prompt:'none',
-      accessType: 'online',
-      approvalPrompt: 'auto'
-    }));
+    self.app.get('/auth/google', passport.authenticate('google',
+        {
+            scope: ['https://www.googleapis.com/auth/userinfo.profile',
+                'https://www.googleapis.com/auth/userinfo.email'],
+            accessType: 'online',
+            approvalPrompt: 'auto'
+        }));
 
-  self.app.get('/auth/google/callback',
-    passport.authenticate('google', { failureRedirect: '/pages/index' }),
-    function (req, res) {
-      console.log(res.user);
-      res.redirect('/');
+    self.app.get('/auth/google/callback',
+        passport.authenticate('google', {failureRedirect: '/pages/index'}),
+        (req, res) => {
+            res.redirect('/');
+        });
+
+    self.app.get('/logout', (req, res) => {
+        req.logout();
+        res.redirect('/login');
     });
-
-  self.app.get('/logout', function (req, res) {
-    req.logout();
-    res.redirect('/login');
-  });
 
 };
 

@@ -1,23 +1,22 @@
 'use strict';
 
 // load the google module
-var passport = require('passport');
-var debug = require('debug')('beershots:passport');
-var GoogleStrategy = require('passport-google-oauth2').Strategy;
+const passport = require('passport');
+const debug = require('debug')('beershots:passport');
+const GoogleStrategy = require('passport-google-oauth2').Strategy;
 
 // load up the user model
-var User = require('../models/user');
+const userModel = require('../models/user');
 
-passport.serializeUser(function (user, done) {
-    done(null,  user);
+passport.serializeUser((user, done) => {
+    done(null, user);
 });
 
-passport.deserializeUser(function (user, done) {
-
-    done( null , user);
+passport.deserializeUser((user, done) => {
+    done(null, user);
 });
 
-var callback;
+let callback;
 
 if (process.env.GOOGLE_CALLBACK) {
     callback = process.env.GOOGLE_CALLBACK;
@@ -33,16 +32,16 @@ passport.use(new GoogleStrategy({
         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
         callbackURL: callback
     },
-    function (accessToken, refreshToken, profile, done) {
+    (accessToken, refreshToken, profile, done) => {
 
         debug('looking up user %s', profile.id);
 
         // make the code asynchronous
         // User.findOne won't fire until we have all our data back from Google
-        process.nextTick(function () {
+        process.nextTick(() => {
 
             // try to find the user based on their google credentials
-            User.findOne(profile, function (err, user) {
+            userModel.findOne(profile, (err, user) => {
 
                 if (err) {
                     return done(err);
@@ -52,37 +51,37 @@ passport.use(new GoogleStrategy({
                     debug('User %s found', profile.id);
                     if (user.googletoken != accessToken) {
                         user.googletoken = accessToken;
-                        User.updateAccessToken(user.id, accessToken, function (error) {
+                        userModel.updateAccessToken(user.id, accessToken, (error) => {
                             debug("Token updated for user %s", profile.username);
                         });
                     }
 
                     return done(null, user);
-                } else {
-                    debug('No User found');
-
-                    var newUser = new User();
-
-                    // set all of the relevant information
-                    newUser.firstname = profile.name.givenName;
-                    newUser.surname = profile.name.familyName;
-                    newUser.googleid = profile.id;
-                    newUser.fullname = profile.displayName;
-                    newUser.email = profile.email; // pull the first email
-                    newUser.picture = profile.photos[ 0 ].value;
-                    newUser.gender = profile.gender;
-                    newUser.googletoken = accessToken;
-
-                    // save the user
-                    newUser.save(function (id) {
-                        debug('created new user : %s');
-                        if (id == null) {
-                            return done(null, false);
-                        }
-                        newUser.id = id;
-                        return done(null, newUser);
-                    });
                 }
+                debug('No User found');
+
+                const newUser = new userModel();
+
+                // set all of the relevant information
+                newUser.firstname = profile.name.givenName;
+                newUser.surname = profile.name.familyName;
+                newUser.googleid = profile.id;
+                newUser.fullname = profile.displayName;
+                newUser.email = profile.email; // pull the first email
+                newUser.picture = profile.photos[0].value;
+                newUser.gender = profile.gender;
+                newUser.googletoken = accessToken;
+
+                // save the user
+                newUser.save((id) => {
+                    debug('created new user : %s');
+                    if (id === null) {
+                        return done(null, false);
+                    }
+                    newUser.id = id;
+                    return done(null, newUser);
+                });
+
             });
         });
 

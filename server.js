@@ -2,36 +2,36 @@
 
 require('dotenv').config({ path: 'process.env' });
 
-var passport = require('passport');
+const passport = require('passport');
 require('./config/passport');
 
-var debug = require('debug')('beershots:server');
-var http = require('http');
+const debug = require('debug')('beershots:server');
+const http = require('http');
 
-var express = require('express');
+const express = require('express');
 require('handlebars');
-var exphbs = require('express-handlebars');
-var hdf = require('handlebars-dateformat');
+const exphbs = require('express-handlebars');
+const hdf = require('handlebars-dateformat');
 require('./utils/handlerbarsHelpers');
 
-var path = require('path');
-var favicon = require('serve-favicon');
-var morgan = require('morgan');
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
+const path = require('path');
+const favicon = require('serve-favicon');
+const morgan = require('morgan');
+const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
 
-var session = require('express-session');
+const session = require('express-session');
 //var express_enforces_ssl = require('express-enforces-ssl');
 
-var setupRoutes = require('./routes/setupRoutes');
+const setupRoutes = require('./routes/setupRoutes');
 
-var helmet = require('helmet');
+const helmet = require('helmet');
 
 /**
  * Set API Key based on Environment variable
  **/
-var BeerShotApp = function () {
-    var self = this;
+const BeerShotApp = function () {
+    const self = this;
 
     /**
      *  Set up server IP address and port # using env variables/defaults.
@@ -62,15 +62,15 @@ var BeerShotApp = function () {
      */
     self.setupTerminationHandlers = function () {
         //  Process on exit and signals.
-        process.on('exit', function () {
+        process.on('exit', () => {
             self.terminator();
         });
 
         // Removed 'SIGPIPE' from the list - bugz 852598.
         [ 'SIGHUP', 'SIGINT', 'SIGQUIT', 'SIGILL', 'SIGTRAP', 'SIGABRT',
             'SIGBUS', 'SIGFPE', 'SIGUSR1', 'SIGSEGV', 'SIGUSR2', 'SIGTERM'
-        ].forEach(function (element, index, array) {
-            process.on(element, function () {
+        ].forEach((element, index, array) => {
+            process.on(element, () => {
                 self.terminator(element);
             });
         });
@@ -101,30 +101,30 @@ var BeerShotApp = function () {
         self.app.set('view engine', 'hbs');
 
         // Lets encrypt response
-        var letsEncryptUrl = process.env.LETS_ENCRYPT;
-        var letsEncryptResponse = process.env.LETS_ENCRYPT_RESPONSE;
+        const letsEncryptUrl = process.env.LETS_ENCRYPT;
+        const letsEncryptResponse = process.env.LETS_ENCRYPT_RESPONSE;
 
         if( letsEncryptResponse != undefined && letsEncryptResponse != undefined) {
-            self.app.get('/.well-known/acme-challenge/' + letsEncryptUrl, function (req, res) {
+            self.app.get('/.well-known/acme-challenge/' + letsEncryptUrl, (req, res) => {
                 res.send(letsEncryptResponse);
                 res.end();
             });
         }
         // Setup the Google Analytics ID if defined
         self.app.locals.locationiq_key = process.env.LOCATIONIQ_KEY || undefined;
-        console.log("LocationIQ Key:" + self.app.locals.locationiq_key);
+        debug("LocationIQ Key: %s", self.app.locals.locationiq_key);
 
         // Setup the Google Analytics ID if defined
         self.app.locals.google_id = process.env.GOOGLE_ID || undefined;
         debug('GA ID: %s', self.app.locals.google_id);
 
-        var cookie_key = process.env.COOKIE_KEY || 'aninsecurecookiekey';
-        var sess = {
+        const cookie_key = process.env.COOKIE_KEY || 'aninsecurecookiekey';
+        const sess = {
             secret: cookie_key,
             cookie: {}
         }
 
-        if (self.app.get('env') == 'production') {
+        if (self.app.get('env') === 'production') {
             self.app.enable('trust proxy', 1); // trusts first proxy - Heroku load balancer
             debug('In production mode');
             sess.cookie.secure = true;
@@ -155,7 +155,7 @@ var BeerShotApp = function () {
         // will print stacktrace
         if (self.app.get('env') === 'development') {
             debug('In development mode');
-            self.app.use(function (err, req, res, next) {
+            self.app.use((err, req, res, next) => {
                 res.status(err.status || 500);
                 res.render('error', {
                     message: err.message,
@@ -165,7 +165,7 @@ var BeerShotApp = function () {
         }
 
         // Add stuff to each request here
-        self.app.use(function (req, res, next) {
+        self.app.use((req, res, next) => {
             if (req.user) {
                 res.locals.profile = req.user;
             }
@@ -177,7 +177,7 @@ var BeerShotApp = function () {
         // Setup the Server-side events
         setupRoutes.setup( self );
 
-        self.app.use(function (req, res, next) {
+        self.app.use((req, res, next) => {
             // the status option, or res.statusCode = 404
             // are equivalent, however with the option we
             // get the 'status' local available as well
@@ -191,9 +191,9 @@ var BeerShotApp = function () {
      */
     self.start = function () {
         //  Start the app on the specific interface (and port).
-        self.app.listen(self.port, self.ip_address, function () {
+        self.app.listen(self.port, self.ip_address, () => {
             debug('%s: Server started on %s:%d ...',
-                Date(Date.now()), self.port);
+                Date(Date.now()), self.ip_address, self.port);
         });
     };
 }
@@ -201,6 +201,6 @@ var BeerShotApp = function () {
 /**
  *  main():  Main code.
  */
-var exampleNodeApp = new BeerShotApp();
+const exampleNodeApp = new BeerShotApp();
 exampleNodeApp.initialize();
 exampleNodeApp.start();

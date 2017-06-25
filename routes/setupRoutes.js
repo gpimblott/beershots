@@ -28,8 +28,6 @@ SetupRoutes.setup = function (self) {
     // Everything should be authenticated
     self.app.use((req, res, next) => {
 
-        debug("default security route");
-
         if (req.isUnauthenticated()) {
             debug("Unauthenticated request caught : %s", req.path);
             if (req.path.startsWith("/api/")) {
@@ -37,11 +35,9 @@ SetupRoutes.setup = function (self) {
                 return;
             }
 
-
             req.session.redirect_to = req.url;
             res.redirect("/login");
         } else {
-            debug("authenticated request : %s", req.path);
             next("route");
         }
     });

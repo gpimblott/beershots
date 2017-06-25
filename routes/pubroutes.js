@@ -25,7 +25,6 @@ PubRoutes.createRoutes = function (self) {
         let latitude = sanitizer(req.params.latitude);
         let longitude = sanitizer(req.params.longitude);
 
-
         latitude = parseFloat(latitude);
         longitude = parseFloat(longitude);
 
