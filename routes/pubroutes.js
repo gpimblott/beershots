@@ -15,8 +15,12 @@ PubRoutes.createRoutes = function (self) {
         pid = parseFloat(pid);
 
         debug( "Getting pub %d" , pid );
-        pubs.getOne(pid, (result) => {
-            res.render('pub', { layout: 'min-map', pub: result[0] });
+        pubs.getOne(pid, req.user.id, (pubResult) => {
+            pubs.getRatingStatsForPub( pid , (ratingResult) => {
+                const pubDetails = pubResult[0];
+                pubDetails.ratings = ratingResult;
+                res.render('pub', {layout: 'min-map', pub: pubDetails});
+            })
         });
 
     });

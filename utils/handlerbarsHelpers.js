@@ -80,4 +80,23 @@ Handlebars.registerHelper('score-stars', (score) => {
     return out + "</div>";
 });
 
+Handlebars.registerHelper('score-bars', (ratings , totalRatings , numStars) => {
+    let out = "<div class='progress'>";
+    const percentage = 30;
+
+    console.log( numStars);
+    console.log( ratings );
+
+    console.log (" ** " + ratings.find( (element) => ( element.rating===numStars)) );
+
+    out += "<div class='progress-bar progress-bar-info' role='progressbar' aria-valuenow='20'";
+    out += "aria-valuemin='0' aria-valuemax='100' style='width: " + percentage + "%'>";
+
+    out += "<span class='sr-only'>";
+    out += percentage;
+    out += "%</span>";
+
+
+    return out + "</div></div>";
+});
 

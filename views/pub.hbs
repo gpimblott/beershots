@@ -94,13 +94,10 @@
         });
 
         $('#my-rating').on('starrr:change', function (e, value) {
-            console.log("Changed my rating : " + value);
 
             var data = {};
             data.rating =  value;
             data.pid = {{pub.pid}};
-
-            console.log(JSON.stringify( data ));
 
             $.ajax({
                 type: "PUT",
@@ -123,7 +120,11 @@
     });
 
     $(function () {
-        $("#my-rating").starrr();
+        $("#my-rating").starrr(
+        {{#if pub.my_rating}}
+            { rating : {{pub.my_rating}} }
+        {{/if}}
+        );
 
         return;
     });

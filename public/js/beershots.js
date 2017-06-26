@@ -5,7 +5,6 @@ function doPubSearch (query , locationiq_key ) {
         $.getJSON("https://api.postcodes.io/postcodes/" + encodeURI(query))
             .done((data) => {
                 if( data.status===200 ) {
-                    console.log("found");
                     window.location = '/pubs/' + data.result.latitude + '/' + data.result.longitude + '/';
                 }
             });

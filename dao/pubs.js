@@ -39,14 +39,16 @@ Pubs.getNear = function (latitude, longitude, done) {
  * @param pid
  * @param done
  */
-Pubs.getOne = function (pid, done) {
+Pubs.getOne = function (pid, uid, done) {
     debug("getting one pub : " + pid);
     const sql = "SELECT pubs.*, " +
         "(select avg(rating) from pub_ratings where pid=$1 group by pid ) as average_rating," +
-        "(select count(rating) from pub_ratings where pid=$1) as total_reviews" +
+        "(select count(rating) from pub_ratings where pid=$1) as total_reviews, " +
+        " pub_ratings.rating as my_rating" +
         " FROM pubs" +
-        " where pid=$1";
-    const params = [pid];
+        " LEFT JOIN pub_ratings ON pubs.pid=pub_ratings.pid and pub_ratings.uid=$2" +
+        " where pubs.pid=$1";
+    const params = [pid, uid];
 
     dbhelper.query(sql, params,
         (result) => {
@@ -56,6 +58,22 @@ Pubs.getOne = function (pid, done) {
             done(null, error);
         });
 };
+
+/**
+ * Get the number of people who voted for each star
+ */
+Pubs.getRatingStatsForPub = function( pid , done) {
+    const sql = "select count(*),rating from pub_ratings where pid=$1 group by rating order by rating desc;"
+    const params = [pid];
+
+    dbhelper.query(sql, params,
+        (result) => {
+            done(result);
+        },
+        (error) => {
+            done(null, error);
+        });
+}
 
 /**
  * Add a new pub
