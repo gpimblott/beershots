@@ -9,10 +9,18 @@ const PubRoutes = function () {
 
 PubRoutes.createRoutes = function (self) {
 
+
     self.app.get('/pub/:pid', (req, res, next) => {
 
         let pid = sanitizer(req.params.pid);
         pid = parseFloat(pid);
+
+        if( isNaN(pid)) {
+            debug("Pub id was NaN");
+            res.redirect("/");
+            res.end();
+            return;
+        }
 
         debug( "Getting pub %d" , pid );
         pubs.getOne(pid, req.user.id, (pubResult) => {
@@ -22,6 +30,19 @@ PubRoutes.createRoutes = function (self) {
                 res.render('pub', {layout: 'min-map', pub: pubDetails});
             })
         });
+
+    });
+
+    /**
+     * get a random pub
+     */
+    self.app.get('/pub/', (req, res, next) => {
+
+        pubs.getRandomId( (result)=> {
+            debug(result);
+            debug("Random pub : %d" , result.pid);
+            res.redirect('/pub/' + result.pid);
+        })
 
     });
 

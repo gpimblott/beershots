@@ -24,12 +24,16 @@ ApiRoutes.createRoutes = function (self) {
 
         debug("User %d : rating pub %d - %d stars", req.user.id , pid, rating);
         pubRatings.add(req.user.id, pid, rating, (result) => {
-            const payload = {};
-            payload.success = true;
+            
+            pubs.refreshRatingStatsForPub( pid , (result) => {
+                const payload = {};
+                payload.success = true;
 
-            res.writeHead(200, {"Content-Type": "application/json"});
-            res.end(JSON.stringify(payload));
-            return;
+                res.writeHead(200, {"Content-Type": "application/json"});
+                res.end(JSON.stringify(payload));
+                return;
+            });
+
         });
 
 

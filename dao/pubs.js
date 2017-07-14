@@ -23,7 +23,7 @@ Pubs.getNear = function (latitude, longitude, done) {
         " FROM pubs" +
         " WHERE ST_Distance(the_geom, ST_MakePoint( $1, $2 ) ) < 2000" +
         " ORDER BY the_geom <->  ST_MakePoint( $1, $2 ) ";
-    const params = [longitude, latitude];
+    const params = [ longitude, latitude ];
 
     dbhelper.query(sql, params,
         (result) => {
@@ -48,7 +48,7 @@ Pubs.getOne = function (pid, uid, done) {
         " FROM pubs" +
         " LEFT JOIN pub_ratings ON pubs.pid=pub_ratings.pid and pub_ratings.uid=$2" +
         " where pubs.pid=$1";
-    const params = [pid, uid];
+    const params = [ pid, uid ];
 
     dbhelper.query(sql, params,
         (result) => {
@@ -60,13 +60,53 @@ Pubs.getOne = function (pid, uid, done) {
 };
 
 /**
- * Get the number of people who voted for each star
+ * Get a random pub id
+ * @param done
  */
-Pubs.getRatingStatsForPub = function( pid , done) {
-    const sql = "select count(*),rating from pub_ratings where pid=$1 group by rating order by rating desc;"
-    const params = [pid];
+Pubs.getRandomId = function (done) {
+    debug("getting random pub");
+    const sql = "SELECT pid FROM pubs ORDER BY RANDOM() LIMIT 1";
+
+    const params = [];
 
     dbhelper.query(sql, params,
+        (result) => {
+            done(result[0]);
+        },
+        (error) => {
+            done(null, error);
+        });
+};
+
+/**
+ * Get the number of people who voted for each star
+ */
+Pubs.getRatingStatsForPub = function (pid, done) {
+    const sql = "select count(*),rating from pub_ratings where pid=$1 group by rating order by rating desc;"
+    const params = [ pid ];
+
+    dbhelper.query(sql, params,
+        (result) => {
+            done(result);
+        },
+        (error) => {
+            done(null, error);
+        });
+}
+
+/**
+ * Update the overall rating for a pub
+ */
+Pubs.refreshRatingStatsForPub = function (pid, done) {
+    const sql = "UPDATE pubs set rating = " +
+        " ( SELECT (SUM(totals) / (SELECT COUNT(pid) as votes FROM pub_ratings WHERE pid=$1)) as score " +
+        " FROM ( " +
+        " SELECT COUNT(rating)*rating as totals FROM pub_ratings WHERE pid=$1 GROUP BY rating) totals) " +
+        " WHERE pid=$1"
+
+    const params = [ pid ];
+
+    dbhelper.insert(sql, params,
         (result) => {
             done(result);
         },
@@ -82,11 +122,11 @@ Pubs.getRatingStatsForPub = function( pid , done) {
  */
 Pubs.add = function (name, description, done) {
     const sql = "INSERT INTO pubs ( name, description ) values ( $1 , $2 ) returning id";
-    const params = [name, description];
+    const params = [ name, description ];
 
     dbhelper.insert(sql, params,
         (result) => {
-            done(result.rows[0].id);
+            done(result.rows[ 0 ].id);
         },
         (error) => {
             console.log(error);

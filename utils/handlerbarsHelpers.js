@@ -80,16 +80,32 @@ Handlebars.registerHelper('score-stars', (score) => {
     return out + "</div>";
 });
 
+/**
+ * Display a progress bar for the rating card
+ */
 Handlebars.registerHelper('score-bars', (ratings , totalRatings , numStars) => {
     let out = "<div class='progress'>";
-    const percentage = 30;
 
-    console.log( numStars);
-    console.log( ratings );
+    const rating = ratings.find( (element) => ( element.rating===numStars));
+    const percentage = (totalRatings===0 || rating===undefined? 0 : (100/totalRatings) * rating.count);
 
-    console.log (" ** " + ratings.find( (element) => ( element.rating===numStars)) );
+    let barType = "info";
 
-    out += "<div class='progress-bar progress-bar-info' role='progressbar' aria-valuenow='20'";
+    switch( numStars) {
+        case 5 :    barType = "success";
+                    break;
+        case 4 :    barType = "warning";
+                    break;
+        case 3 :    barType = "info";
+                    break;
+        case 2 :    barType = "info";
+                    break;
+        case 1 :    barType = "error";
+                    break;
+    }
+
+    out += "<div class='progress-bar progress-bar-" + barType;
+    out += "' role='progressbar' aria-valuenow='20'";
     out += "aria-valuemin='0' aria-valuemax='100' style='width: " + percentage + "%'>";
 
     out += "<span class='sr-only'>";
